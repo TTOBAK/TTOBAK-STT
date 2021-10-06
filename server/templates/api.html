@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+		<meta content="utf-8" http-equiv="encoding">
+    <title>한글 발음 정확도 API 페이지</title>
+  </head>
+  <body>
+  	<style>
+  		.form {
+  			width: 500px;
+  			height: 300px;
+  			margin: 100px auto;
+  			border: 1px solid black;
+  		}
+
+  		.form-upper, .form-lower, .form-bottom{
+  			margin: 20px;
+  		}
+
+      #result {
+        width: 800px;
+        margin: 20px auto;
+        font-weight: bold;
+        font-size: 1.5rem;
+        line-height: 2em;
+        color: green;
+        overflow: auto;
+        white-space: pre-wrap;
+      }
+  	</style>
+  	<div class="form">
+  		<form id="form" enctype="multipart/form-data">
+  			<div class="form-upper">
+	  			<label for="course">과정 : </label>
+	  			<input type="text" id="course" name="course" value="" placeholder="00008027" /> <br />
+          <label for="user">유저 : </label>
+          <input type="text" id="user" name="user" value="" placeholder="104" />
+	  		</div>
+	  		<div class="form-lower">
+	  			<label for="file">오디오 : </label>
+	  			<input type="file" id="file" name="file" />
+	  		</div>
+	  		<div class="form-bottom">
+	  			<button type="button" onclick='sendData();'>Submit</button>
+	  		</div>
+  		</form>
+  	</div>
+    <pre id="result"></pre>
+    <script type="text/javascript">
+      function sendData() {
+        var formData = new FormData();
+
+        formData.append('course', document.getElementById('course').value);
+        formData.append('user', document.getElementById('user').value);
+        formData.append('file', document.getElementById('file').files[0]);
+
+        fetch('/api/score', {
+          method: 'POST', 
+          body: formData
+        })
+        .then((response) => response.json())
+        .catch((error) => console.error(error))
+        .then((response) => {
+          const result = JSON.stringify(response, undefined, 4);
+          document.getElementById("result").innerHTML = result;
+          document.getElementsByClassName('form')[0].style.display = 'none';
+        });
+        }
+      </script>
+  </body>
+</html>
